@@ -25,7 +25,7 @@ main() {
   check_dependencies
   download_imager
   chmod +x "$IMAGER_FILE"
-  echo "Done. Run: pkexec $IMAGER_FILE"
+  printf "Done.\n(optional to fix permissions) xhost +si:localuser:root\nRun: sudo %s\n" "$IMAGER_FILE"
 }
 
 main "$@"
