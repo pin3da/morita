@@ -77,6 +77,17 @@ ssh username@morita.local
 ssh username@192.168.1.xxx
 ```
 
+### 5. Bootstrap the Raspberry Pi
+
+Copy and run the bootstrap script to install git and docker:
+
+```bash
+scp bootstrap.sh username@morita.local:~/
+ssh username@morita.local
+./bootstrap.sh
+```
+
+Log out and back in after running for docker group changes to take effect.
 
 ### TODOs
 
