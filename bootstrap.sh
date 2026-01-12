@@ -11,6 +11,7 @@ install_apt_packages() {
   sudo apt install -y -qq \
     ca-certificates \
     neovim \
+    bind9-dnsutils \
     curl \
     git || {
     echo "Package installation failed. Exiting."
