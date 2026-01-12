@@ -1,0 +1,48 @@
+# Environment variables and secrets
+.env
+*.env
+secrets.txt
+credentials.txt
+
+# SSH keys
+*.pem
+*.key
+id_rsa*
+
+# Backup files
+*.backup
+*.bak
+*~
+
+# Log files
+*.log
+logs/
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Editor specific
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# AppImage files
+*.AppImage
+
+# Downloaded OS images
+*.img
+*.img.xz
+*.zip
+downloads/
+
+# Private notes
+NOTES.md
+TODO.md
