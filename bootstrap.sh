@@ -13,6 +13,7 @@ install_apt_packages() {
     neovim \
     bind9-dnsutils \
     curl \
+    tmux \
     git || {
     echo "Package installation failed. Exiting."
     exit 1
@@ -56,14 +57,47 @@ install_docker() {
   }
 }
 
+disable_wifi_power_management() {
+  echo "  Disabling WiFi power saving..."
+  sudo iw dev wlan0 set power_save off 2>/dev/null || true
+
+  sudo mkdir -p /etc/NetworkManager/conf.d
+    sudo tee /etc/NetworkManager/conf.d/wifi-powersave.conf > /dev/null <<EOF
+[connection]
+wifi.powersave = 2
+EOF
+    echo "  ✓ WiFi power management disabled"
+}
+
+configure_ipv6() {
+sudo tee /etc/sysctl.d/99-enable-ipv6.conf > /dev/null <<EOF
+# Enable IPv6 on all interfaces
+net.ipv6.conf.all.disable_ipv6 = 0
+net.ipv6.conf.default.disable_ipv6 = 0
+net.ipv6.conf.eth0.disable_ipv6 = 0
+net.ipv6.conf.wlan0.disable_ipv6 = 0
+EOF
+
+  sudo sysctl -p /etc/sysctl.d/99-enable-ipv6.conf > /dev/null
+  
+  # Verify IPv6 is working
+  if ip -6 addr show | grep -q "inet6"; then
+    echo "  ✓ IPv6 addresses detected"
+  else
+    echo "  Warning: No IPv6 addresses found (may need reboot or router doesn't support IPv6)"
+  fi
+}
+
 fyi_post_install() {
-  echo "Log out and back in for docker group changes to take effect."
+	echo "(optional) Log out and back in for docker group changes to take effect."
 }
 
 main() {
   install_apt_packages
   add_docker_repo
   install_docker
+  disable_wifi_power_management
+  configure_ipv6
   fyi_post_install
 
   echo "Script completed successfully!"
