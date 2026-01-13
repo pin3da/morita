@@ -89,6 +89,32 @@ ssh username@morita.local
 
 Log out and back in after running for docker group changes to take effect.
 
+## Troubleshooting
+
+### WiFi Connectivity Issue (brcmfmac driver bug) - (2026-01-13 Claude code help)
+
+**Symptoms:** Pi becomes unreachable from one specific computer after running for a while, but remains accessible from other devices. Layer 2 (ARP) works but Layer 3 (ping/SSH) fails.
+
+**Diagnosis:**
+```bash
+# From main computer - if arping works but ping fails, it's this bug
+sudo arping -I wlp170s0 <ip_raspberry>  # works
+ping <ip_raspberry>                     # fails
+
+# tcpdump shows ICMP requests going out but no replies coming back
+sudo tcpdump -i wlp170s0 host <ip_raspberry> -nn
+```
+
+**Root Cause:** According to **Claude code** citation needed, the Pi 5's Broadcom WiFi driver (brcmfmac) can get into a bad state where it stops responding to unicast packets from specific hosts.
+
+**Quick Fix (on the Pi):**
+```bash
+# Toggle promiscuous mode to reset driver state
+sudo ip link set wlan0 promisc on && sleep 1 && sudo ip link set wlan0 promisc off
+```
+
+**Permanent Solution???:** Use Ethernet instead of WiFi for reliable connectivity.
+
 ### TODOs
 
 - [ ] Configure keys in the raspberry to clone repos
