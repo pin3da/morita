@@ -89,15 +89,17 @@ EOF
   fi
 }
 
-configure_fish() {
-  echo "Configuring fish shell..."
+setup_configs() {
+  echo "Setting up configs..."
   SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
   mkdir -p ~/.config/fish
   cp "$SCRIPT_DIR/configs/config.fish" ~/.config/fish/config.fish
   sudo chsh -s "$(command -v fish)" "$USER"
-
   echo "  ✓ Fish configured (will take effect on next login)"
+
+  cp "$SCRIPT_DIR/configs/tmux.conf" ~/.tmux.conf
+  echo "  ✓ Tmux configured"
 }
 
 fyi_post_install() {
@@ -110,7 +112,7 @@ main() {
   install_docker
   disable_wifi_power_management
   configure_ipv6
-  configure_fish
+  setup_configs
   fyi_post_install
 
   echo "Script completed successfully!"
