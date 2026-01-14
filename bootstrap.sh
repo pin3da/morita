@@ -14,6 +14,7 @@ install_apt_packages() {
     bind9-dnsutils \
     curl \
     tmux \
+    fish \
     git || {
     echo "Package installation failed. Exiting."
     exit 1
@@ -88,6 +89,17 @@ EOF
   fi
 }
 
+configure_fish() {
+  echo "Configuring fish shell..."
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+  mkdir -p ~/.config/fish
+  cp "$SCRIPT_DIR/configs/config.fish" ~/.config/fish/config.fish
+  sudo chsh -s "$(command -v fish)" "$USER"
+
+  echo "  ✓ Fish configured (will take effect on next login)"
+}
+
 fyi_post_install() {
   echo "(optional) Log out and back in for docker group changes to take effect."
 }
@@ -98,6 +110,7 @@ main() {
   install_docker
   disable_wifi_power_management
   configure_ipv6
+  configure_fish
   fyi_post_install
 
   echo "Script completed successfully!"
