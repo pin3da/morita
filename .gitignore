@@ -46,3 +46,12 @@ downloads/
 # Private notes
 NOTES.md
 TODO.md
+
+# Caddy reverse proxy
+caddy/data/
+caddy/config/
+caddy/.env
+caddy/logs/
+
+# Docker volumes
+**/volumes/

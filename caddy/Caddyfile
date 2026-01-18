@@ -1,0 +1,69 @@
+# Caddy reverse proxy configuration
+# Replace example.com with your actual domain in .env file
+
+# Global options
+{
+	# Email for Let's Encrypt certificate notifications
+	email {$EMAIL}
+
+	# Disable automatic HTTPS for local testing
+	# auto_https off
+
+	# Admin API endpoint for health checks and metrics
+	admin 0.0.0.0:2019
+}
+
+# Reusable snippets for common configurations
+(security_headers) {
+	header {
+		# Enable HSTS for better security
+		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+		# Prevent MIME type sniffing
+		X-Content-Type-Options "nosniff"
+		# Clickjacking protection
+		X-Frame-Options "SAMEORIGIN"
+		# XSS protection
+		X-XSS-Protection "1; mode=block"
+		# Referrer policy
+		Referrer-Policy "strict-origin-when-cross-origin"
+		# Remove server header
+		-Server
+	}
+}
+
+(proxy_headers) {
+	# Standard reverse proxy headers
+	header_up Host {host}
+	header_up X-Real-IP {remote_host}
+}
+
+(logging) {
+	log {
+		output file /data/logs/access.log {
+			roll_size 100mb
+			roll_keep 5
+		}
+		format json
+	}
+}
+
+# Pi-hole web interface
+# Access Pi-hole admin at https://pihole.yourdomain.com
+pihole.{$DOMAIN} {
+	import logging
+	import security_headers
+
+	# Proxy to Pi-hole Docker container
+	reverse_proxy pihole:80 {
+		import proxy_headers
+	}
+}
+
+# Main domain - simple welcome page
+{$DOMAIN} {
+	respond "Welcome!"
+}
+
+# Import additional service configurations
+# Uncomment the line below to use example-service.caddy as a template
+# import /etc/caddy/example-service.caddy

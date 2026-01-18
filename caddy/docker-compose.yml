@@ -1,0 +1,44 @@
+networks:
+  caddy:
+    external: true
+
+services:
+  caddy:
+    image: caddy:2-alpine
+    container_name: caddy
+    restart: unless-stopped
+
+    ports:
+      - "80:80"       # HTTP
+      - "443:443"     # HTTPS
+      - "443:443/udp" # HTTP/3 (QUIC)
+
+    volumes:
+      # Caddyfile configuration (read-only)
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      # Persistent storage for certificates and private keys
+      - caddy_data:/data
+      # Persistent storage for configuration state
+      - caddy_config:/config
+
+    networks:
+      # This needs to be the same name as in the `networks` section above.
+      # Also in any other docker compose file for reverse-proxied services.
+      - caddy
+
+    env_file:
+      - ".env"
+
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:2019/config/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  # Named volumes for Caddy data persistence
+  # CRITICAL: These contain TLS certificates and must persist across restarts
+  caddy_data:
+    driver: local
+  caddy_config:
+    driver: local

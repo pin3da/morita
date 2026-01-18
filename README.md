@@ -51,6 +51,16 @@ cd bootstrap && ./bootstrap.sh
 
 Log out and back in for group changes to take effect.
 
+### 5. Set Up Caddy Reverse Proxy (Optional)
+
+For HTTPS access to self-hosted services with automatic Let's Encrypt certificates:
+
+```bash
+./setup-caddy.sh
+```
+
+See [caddy/README.md](caddy/README.md) for detailed configuration, DDNS setup, and adding services.
+
 ## Troubleshooting
 
 ### WiFi Connectivity Issue (brcmfmac driver bug)
