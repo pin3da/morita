@@ -21,9 +21,11 @@ install_apt_packages() {
   }
 }
 
-add_docker_repo() {
-  echo "Adding docker apt repository..."
+add_3p_repos() {
+  echo "Adding third party repositories..."
   sudo install -m 0755 -d /etc/apt/keyrings
+
+  # Docker
   sudo curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
   sudo chmod a+r /etc/apt/keyrings/docker.asc
 
@@ -33,21 +35,28 @@ add_docker_repo() {
     bookworm stable" |
     sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
 
+  # Mise
+  curl -fsSL https://mise.jdx.dev/gpg-key.pub | sudo tee /etc/apt/keyrings/mise-archive-keyring.pub >/dev/null
+
+  echo "deb [signed-by=/etc/apt/keyrings/mise-archive-keyring.pub arch=$(dpkg --print-architecture)] https://mise.jdx.dev/deb stable main" |
+    sudo tee /etc/apt/sources.list.d/mise.list >/dev/null
+
   sudo apt update -qq || {
-    echo "Failed to update package lists after adding docker repo. Exiting."
+    echo "Failed to update package lists after adding third party repos. Exiting."
     exit 1
   }
 }
 
-install_docker() {
-  echo "Installing docker..."
+install_3p_packages() {
+  echo "Installing third party packages..."
   sudo apt install -y -qq \
     docker-ce \
     docker-ce-cli \
     containerd.io \
     docker-buildx-plugin \
-    docker-compose-plugin || {
-    echo "Failed to install docker. Exiting."
+    docker-compose-plugin \
+    mise || {
+    echo "Failed to install third party packages. Exiting."
     exit 1
   }
 
@@ -56,6 +65,15 @@ install_docker() {
     echo "Failed to add user to docker group. Exiting."
     exit 1
   }
+}
+
+setup_mise_environments() {
+  echo "Setting up mise environments..."
+  mise use -g node rust || {
+    echo "Failed to install environments with mise. Exiting."
+    exit 1
+  }
+  echo "  ✓ Node and Rust configured"
 }
 
 disable_wifi_power_management() {
@@ -108,8 +126,9 @@ fyi_post_install() {
 
 main() {
   install_apt_packages
-  add_docker_repo
-  install_docker
+  add_3p_repos
+  install_3p_packages
+  setup_mise_environments
   disable_wifi_power_management
   configure_ipv6
   setup_configs
