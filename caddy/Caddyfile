@@ -64,6 +64,5 @@ pihole.{$DOMAIN} {
 	respond "Welcome!"
 }
 
-# Import additional service configurations
-# Uncomment the line below to use example-service.caddy as a template
+# Import additional service configurations, for example:
 # import /etc/caddy/example-service.caddy
