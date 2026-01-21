@@ -88,6 +88,17 @@ EOF
   echo "  ✓ WiFi power management disabled"
 }
 
+setup_wifi_workaround() {
+  echo "  Setting up WiFi driver workaround service..."
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+  sudo cp "$SCRIPT_DIR/configs/wlan0-promisc-toggle.service" /etc/systemd/system/
+  sudo systemctl daemon-reload
+  sudo systemctl enable wlan0-promisc-toggle.service
+
+  echo "  ✓ WiFi workaround service installed and enabled"
+}
+
 configure_ipv6() {
   sudo tee /etc/sysctl.d/99-enable-ipv6.conf >/dev/null <<EOF
 # Enable IPv6 on all interfaces
@@ -130,6 +141,7 @@ main() {
   install_3p_packages
   setup_mise_environments
   disable_wifi_power_management
+  setup_wifi_workaround
   configure_ipv6
   setup_configs
   fyi_post_install

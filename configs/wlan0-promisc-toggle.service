@@ -1,0 +1,11 @@
+[Unit]
+Description=Toggle wlan0 promiscuous mode workaround for brcmfmac driver
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/fish -c "ip link set wlan0 promisc on; and sleep 1; and ip link set wlan0 promisc off"
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
