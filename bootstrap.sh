@@ -15,6 +15,7 @@ install_apt_packages() {
     curl \
     tmux \
     fish \
+    libyaml-dev libffi-dev \
     git || {
     echo "Package installation failed. Exiting."
     exit 1
