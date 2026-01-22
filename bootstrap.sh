@@ -69,11 +69,11 @@ install_3p_packages() {
 
 setup_mise_environments() {
   echo "Setting up mise environments..."
-  mise use -g node rust || {
+  mise use -g node rust ruby || {
     echo "Failed to install environments with mise. Exiting."
     exit 1
   }
-  echo "  ✓ Node and Rust configured"
+  echo "  ✓ Node, Rust and Ruby configured"
 }
 
 disable_wifi_power_management() {
