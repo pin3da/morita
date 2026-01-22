@@ -44,9 +44,9 @@ ssh <username>@<hostname>.local
 ### 4. Bootstrap
 
 ```bash
-scp -r configs/ bootstrap.sh <username>@<hostname>.local:~/bootstrap/
+scp -r ./* <username>@<hostname>.local:~/morita
 ssh <username>@<hostname>.local
-cd bootstrap && ./bootstrap.sh
+cd morita && ./bootstrap.sh
 ```
 
 Log out and back in for group changes to take effect.
