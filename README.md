@@ -80,15 +80,15 @@ sudo ip link set wlan0 promisc on && sleep 1 && sudo ip link set wlan0 promisc o
 
 **Root cause:** The Pi 5's Broadcom WiFi driver (brcmfmac) can get into a bad state where it stops responding to unicast packets from specific hosts.
 
-**Permanent solution:** The bootstrap script installs a systemd service that toggles promiscuous mode on boot, which clears the driver state. Alternatively, use Ethernet for more reliable connectivity.
+**Permanent solution:** The bootstrap script installs a systemd timer that toggles promiscuous mode 2 minutes after boot, then every 5 minutes, keeping the driver state clear. Alternatively, use Ethernet for more reliable connectivity.
 
-**Check service status:**
+**Check timer status:**
 ```bash
+# View timer and next trigger time
+systemctl list-timers wlan0-promisc-toggle.timer
+
 # View service status
 sudo systemctl status wlan0-promisc-toggle.service
-
-# Check if enabled at boot
-systemctl is-enabled wlan0-promisc-toggle.service
 
 # View logs
 journalctl -u wlan0-promisc-toggle.service
