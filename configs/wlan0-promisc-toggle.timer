@@ -1,0 +1,11 @@
+[Unit]
+Description=Run wlan0 promiscuous mode toggle every 5 minutes
+After=network-online.target
+Wants=network-online.target
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+
+[Install]
+WantedBy=timers.target

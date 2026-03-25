@@ -94,10 +94,11 @@ setup_wifi_workaround() {
   SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
   sudo cp "$SCRIPT_DIR/configs/wlan0-promisc-toggle.service" /etc/systemd/system/
+  sudo cp "$SCRIPT_DIR/configs/wlan0-promisc-toggle.timer" /etc/systemd/system/
   sudo systemctl daemon-reload
-  sudo systemctl enable wlan0-promisc-toggle.service
+  sudo systemctl enable --now wlan0-promisc-toggle.timer
 
-  echo "  ✓ WiFi workaround service installed and enabled"
+  echo "  ✓ WiFi workaround timer installed and enabled (runs every 5 minutes)"
 }
 
 configure_ipv6() {
